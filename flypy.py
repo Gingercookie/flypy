@@ -4,7 +4,7 @@ import os
 import requests
 import sys
 from pprint import pprint
-from config import API_KEY_ENV_VAR, API_URL, USER_AGENT
+from config import API_KEY_ENV_VAR, API_URL, USER_AGENT, FIELDS
 
 def read_api_key():
 	api_key = os.environ.get(API_KEY_ENV_VAR)
@@ -27,6 +27,14 @@ def command_line():
 
 	return args
 
+def populate_fields():
+	fields = ','.join(FIELDS.values())
+	return fields
+
+def create_URL(api_key):
+	url = API_URL.format(api_key=api_key, fields=populate_fields())
+	return url
+
 if __name__ == '__main__':
 	# Read the api key
 	api_key = read_api_key()
@@ -41,8 +49,11 @@ if __name__ == '__main__':
 	# Set gzip encoding headers
 	headers = {'Accept-Encoding:': 'gzip', 'User-Agent:': USER_AGENT}
 
+	# create URL using only requested/desired fields
+	url = create_URL(api_key)
+	
 	# Request the data from the server
-	response = requests.post(API_URL.format(api_key), json=json_request, headers=headers)
+	response = requests.post(url, json=json_request, headers=headers)
 
 	# Retrieve the json response
 	if response.status_code == requests.codes.ok:
