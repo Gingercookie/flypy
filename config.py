@@ -13,7 +13,6 @@ FIELDS = {
 	'price': 				'trips/tripOption/pricing/saleTotal',
 	'refundable':			'trips/tripOption/pricing/refundable'
 }
-
 API_URL = 'https://www.googleapis.com/qpxExpress/v1/trips/search?key={}'
 API_KEY_ENV_VAR = 'FLYPY_APIKEY'
 USER_AGENT = 'flypy_v0.1 (gzip)'

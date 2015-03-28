@@ -1,3 +1,4 @@
+import argparse
 import json
 import os
 import requests
@@ -12,9 +13,26 @@ def read_api_key():
 		sys.exit(1)
 	return api_key
 
+def command_line():
+	parser = argparse.ArgumentParser(prog='flypy')
+	parser.add_argument('-f', '--from', required=True, help='The IATA code of the airport to start from')
+	parser.add_argument('-t', '--to', required=True, help='The IATA code of the airport to end at')
+	parser.add_argument('-d', '--departure', required=True, help='The date of departure')
+	parser.add_argument('-a', '--arrival', required=True, help='The date of arrival')
+	parser.add_argument('--adults', default=1, help='Number of adults to book')
+	parser.add_argument('--children', default=0, help='Number of children to book')
+	parser.add_argument('--seniors', default=0, help='Number of senior citizens to book')
+
+	args = parser.parse_args()
+
+	return args
+
 if __name__ == '__main__':
 	# Read the api key
 	api_key = read_api_key()
+
+	# Parse the command line options
+	args = command_line()
 
 	# Load the api request from file
 	with open('apirequest.json', 'r') as file:
