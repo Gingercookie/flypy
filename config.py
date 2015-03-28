@@ -17,3 +17,4 @@ FIELDS = {
 API_URL = 'https://www.googleapis.com/qpxExpress/v1/trips/search?key={api_key}&fields={fields}'
 API_KEY_ENV_VAR = 'FLYPY_APIKEY'
 USER_AGENT = 'flypy_v0.1 (gzip)'
+DEFAULT_SOLUTIONS=25

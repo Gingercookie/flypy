@@ -1,10 +1,11 @@
 import argparse
+from datetime import datetime
 import json
 import os
 import requests
 import sys
 from pprint import pprint
-from config import API_KEY_ENV_VAR, API_URL, USER_AGENT, FIELDS
+from config import API_KEY_ENV_VAR, API_URL, USER_AGENT, FIELDS, DEFAULT_SOLUTIONS
 
 def read_api_key():
 	api_key = os.environ.get(API_KEY_ENV_VAR)
@@ -18,14 +19,37 @@ def command_line():
 	parser.add_argument('-f', '--from', required=True, help='The IATA code of the airport to start from')
 	parser.add_argument('-t', '--to', required=True, help='The IATA code of the airport to end at')
 	parser.add_argument('-d', '--departure', required=True, help='The date of departure')
-	parser.add_argument('-a', '--arrival', required=True, help='The date of arrival')
 	parser.add_argument('--adults', default=1, help='Number of adults to book')
 	parser.add_argument('--children', default=0, help='Number of children to book')
 	parser.add_argument('--seniors', default=0, help='Number of senior citizens to book')
 
 	args = parser.parse_args()
 
-	return args
+	return vars(args)
+
+def create_json_request(options):
+	request = {
+		'request': {
+			'passengers':
+				{
+					'kind': 'qpxexpress#passengerCounts',
+					'adultCount': options.get('adults', 0),
+					'childCount': options.get('children', 0),
+					'seniors': options.get('seniors', 0)
+				},
+			'slice': [
+				{
+					'kind': 'qpxexpress#sliceInput',
+					'origin': options['from'],
+					'destination': options['to'],
+					'date': options['departure']
+				}
+			],
+			'solutions': DEFAULT_SOLUTIONS
+		}
+	}
+
+	return request
 
 def populate_fields():
 	fields = ','.join(FIELDS.values())
@@ -42,9 +66,8 @@ if __name__ == '__main__':
 	# Parse the command line options
 	args = command_line()
 
-	# Load the api request from file
-	with open('apirequest.json', 'r') as file:
-		json_request = json.load(file)
+	# Create the json api request
+	json_request = create_json_request(args)
 
 	# Set gzip encoding headers
 	headers = {'Accept-Encoding:': 'gzip', 'User-Agent:': USER_AGENT}
