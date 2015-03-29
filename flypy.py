@@ -3,8 +3,10 @@ import json
 import os
 import requests
 import sys
+from pprint import pprint
 from preprocessing import create_url, create_json_request
 from config import API_KEY_ENV_VAR, USER_AGENT
+import itinerary
 
 def get_api_key():
 	'''Get the api key from user environment variable'''
@@ -34,6 +36,12 @@ def command_line():
 	# Return dict instead of Namespace
 	return vars(args)
 
+def populate_itinerary(json_response):
+	itineraries = []
+
+	for itinerary in json_response:
+		itineraries.append(Itinerary(itinerary))
+
 if __name__ == '__main__':
 	# Read the api key
 	api_key = get_api_key()
@@ -58,6 +66,9 @@ if __name__ == '__main__':
 		json_response = response.json()
 	else:
 		response.raise_for_status()
+
+	# create/open an output file to write json response to
+	outfile = open('output', 'w')
 
 	# Print out the response
 	print(json.dumps(json_response))

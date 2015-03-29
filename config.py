@@ -12,6 +12,7 @@ FIELDS = {
 	'baggage':				'trips/tripOption/pricing/segmentPricing/freeBaggageOption/pieces',
 	'price': 				'trips/tripOption/pricing/saleTotal',
 	'refundable':			'trips/tripOption/pricing/refundable'
+	'max'
 }
 
 API_URL = 'https://www.googleapis.com/qpxExpress/v1/trips/search?key={api_key}&fields={fields}'
