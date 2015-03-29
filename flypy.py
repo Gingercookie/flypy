@@ -60,4 +60,4 @@ if __name__ == '__main__':
 		response.raise_for_status()
 
 	# Print out the response
-	pprint(json_response)
+	print(json.dumps(json_response))
