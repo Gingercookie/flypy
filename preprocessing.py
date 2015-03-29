@@ -74,7 +74,7 @@ def valid_airport_codes(*codes):
 
 	# Query the openflights table for valid FAA codes
 	for code in codes:
-		cursor.execute('SELECT 1 FROM openflights WHERE faacode = ?', (code,))
+		cursor.execute('SELECT 1 FROM airports WHERE faacode = ?', (code,))
 		
 		# Check if the query return True
 		row = cursor.fetchone()
