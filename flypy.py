@@ -13,7 +13,7 @@ def get_api_key():
 	api_key = os.environ.get(API_KEY_ENV_VAR)
 
 	if not api_key:
-		print('Please set the api key as the environment variable '.format(API_KEY_ENV_VAR))
+		print('Please set the api key as the environment variable {env_var}'.format(env_var=API_KEY_ENV_VAR), file=sys.stderr)
 		sys.exit(1)
 
 	return api_key
