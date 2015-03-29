@@ -36,8 +36,7 @@ def command_line():
 	# Return dict instead of Namespace
 	return vars(args)
 
-def populate_itinerary(json_response):
-	itineraries = []
+def populate_itinerary(json_response, itineraries):
 
 	for itinerary in json_response:
 		itineraries.append(Itinerary(itinerary))
@@ -72,3 +71,9 @@ if __name__ == '__main__':
 
 	# Print out the response
 	print(json.dumps(json_response))
+
+	# create a list of itineraries and populate it
+	itineraries = []
+	populate_itinerary(json_response, itineraries)
+
+	itineraries.print_top_10()
