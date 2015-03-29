@@ -30,14 +30,12 @@ def create_json_request(options):
 		'request': {
 			'passengers':
 				{
-					'kind': 'qpxexpress#passengerCounts',
 					'adultCount': adults,
 					'childCount': children,
 					'seniors': seniors
 				},
 			'slice': [
 				{
-					'kind': 'qpxexpress#sliceInput',
 					'origin': origin_code,
 					'destination': destination_code,
 					'date': api_date

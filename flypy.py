@@ -3,7 +3,6 @@ import json
 import os
 import requests
 import sys
-from pprint import pprint
 from preprocessing import create_url, create_json_request
 from config import API_KEY_ENV_VAR, USER_AGENT
 import itinerary
@@ -65,12 +64,6 @@ if __name__ == '__main__':
 		json_response = response.json()
 	else:
 		response.raise_for_status()
-
-	# create/open an output file to write json response to
-	outfile = open('output', 'w')
-
-	# Print out the response
-	print(json.dumps(json_response))
 
 	# create a list of itineraries and populate it
 	itineraries = []
