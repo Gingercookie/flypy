@@ -5,7 +5,7 @@ import requests
 import sys
 from preprocessing import create_url, create_json_request
 from config import API_KEY_ENV_VAR, USER_AGENT
-import itinerary
+from Itinerary import Itinerary
 
 def get_api_key():
 	'''Get the api key from user environment variable'''
@@ -37,8 +37,8 @@ def command_line():
 
 def populate_itinerary(json_response, itineraries):
 
-	for itinerary in json_response:
-		itineraries.append(Itinerary(itinerary))
+	for tripOption in json_response['trips']['tripOption']:
+		itineraries.append(Flight(tripOption))
 
 if __name__ == '__main__':
 	# Read the api key
