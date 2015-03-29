@@ -71,7 +71,4 @@ if __name__ == '__main__':
 	outfile = open('output', 'w')
 
 	# Print out the response
-	pprint(json_response, outfile)
-
-	populate_itinerary(json_response)
-
+	print(json.dumps(json_response))
