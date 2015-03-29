@@ -1,3 +1,5 @@
+import leg
+
 class Flight:
 	'''Flight class is an object that contains exactly one full flight for a trip.'''
 	'''Each flight includes all legs of that flight.'''
@@ -14,6 +16,8 @@ class Flight:
 		self.departureDate = legs[0].departureDate
 		self.origin = legs[0].origin
 		self.destination = legs[len(legs)-1].destination
+		self.departureTerminal = legs[0].departureTerminal
+		self.arrivalTerminal = legs[len(legs)-1].arrivalTerminal
 		
 		for x in legs:
 			self.duration += legs[x].duration

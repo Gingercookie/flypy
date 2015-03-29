@@ -6,7 +6,7 @@ import sys
 from pprint import pprint
 from preprocessing import create_url, create_json_request
 from config import API_KEY_ENV_VAR, USER_AGENT
-import itinerary, flight, leg
+import itinerary
 
 def get_api_key():
 	'''Get the api key from user environment variable'''
