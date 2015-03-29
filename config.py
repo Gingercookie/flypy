@@ -18,4 +18,4 @@ API_URL = 'https://www.googleapis.com/qpxExpress/v1/trips/search?key={api_key}&f
 API_KEY_ENV_VAR = 'FLYPY_APIKEY'
 USER_AGENT = 'flypy_v0.1 (gzip)'
 SOLUTION_NUMBER = 25
-DATABASE_URL = 'airportcodes.db'
+OPENFLIGHTS_DATABASE_URL = 'airportcodes.db'

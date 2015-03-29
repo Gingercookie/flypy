@@ -1,7 +1,7 @@
 from datetime import date
 import sqlite3
 import sys
-from config import DATABASE_URL, API_URL, FIELDS, SOLUTION_NUMBER
+from config import OPENFLIGHTS_DATABASE_URL, API_URL, FIELDS, SOLUTION_NUMBER
 
 def create_json_request(options):
 	'''Validates inputted options and creates json body for api request'''
@@ -69,10 +69,10 @@ def valid_passenger_count(*passenger_counts):
 def valid_airport_codes(*codes):
 	'''Checks that all airport codes are valid airports'''
 	# Connect to the airport codes database
-	connection = sqlite3.connect(DATABASE_URL)
+	connection = sqlite3.connect(OPENFLIGHTS_DATABASE_URL)
 	cursor = connection.cursor()
 
-	# Query the database for the to and from airport code
+	# Query the openflights table for valid FAA codes
 	for code in codes:
 		cursor.execute('SELECT 1 FROM openflights WHERE faacode = ?', (code,))
 		

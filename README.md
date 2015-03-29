@@ -2,7 +2,6 @@
 
 # Developed by Will Graham and Thomas Kajder
 
-This project has been made in order to make searching for cheap flights easier by way of Google Flights API
+This project has been made in order to make searching for cheap flights easier by way of [Google Flights API](https://developers.google.com/qpx-express/)
 
-Reference documentation for QPX Express API
-https://developers.google.com/qpx-express/v1/trips/search
+Contains information from [OpenFlights Airport Database](http://openflights.org/data.html), which is made available here under the [Open Database License](http://opendatacommons.org/licenses/odbl/1.0/) (ODbL).
