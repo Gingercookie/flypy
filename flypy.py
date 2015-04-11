@@ -43,7 +43,7 @@ def populate_itinerary(json_response, itineraries):
 def print_itineraries(output):
 	return 0
 
-if __name__ == '__main__':
+def main():
 	# Parse the command line options
 	args = command_line()
 
@@ -74,3 +74,6 @@ if __name__ == '__main__':
 
 	for itinerary in itineraries[:10]:
 		print(itinerary)
+
+if __name__ == '__main__':
+	main()
