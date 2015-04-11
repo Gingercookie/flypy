@@ -1,5 +1,3 @@
-import tableprint
-
 class Leg:
 	'''Each leg of a flight represents one single flight from airport to airport.'''
 
@@ -25,7 +23,6 @@ class Leg:
 		print(data)
 		print(headers)
 
-		tableprint.table(data, headers, {'column_width': 20})
 		return 'Origin {}'.format(self.origin)
 		# print('Departure Time: {}'.format(self.departureTime))
 		# print('Destination {}'.format(self.destination))
