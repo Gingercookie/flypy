@@ -16,6 +16,7 @@ class Itinerary:
 		self.departureDate = self.legs[0].departureTime
 		self.duration = sum((leg.duration for leg in self.legs))
 
+	# TODO - __str__ returns a string, does not print on its own
 	def __str__(self):
 		print('Total price: ${}'.format(self.price))
 		print('Total flight duration: {}'.format(self.duration))
