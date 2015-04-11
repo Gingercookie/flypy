@@ -40,8 +40,14 @@ def populate_itinerary(json_response, itineraries):
 	for tripOption in json_response['trips']['tripOption']:
 		itineraries.append(Itinerary(tripOption))
 
-def print_itineraries(output):
-	return 0
+def print_top_flights(itineraries):
+
+	print("Top Flights")
+	print("-----------")
+
+	for num, itinerary in enumerate(itineraries[:10], start=1):
+		print("Itinerary #{}:".format(num),
+			itinerary)
 
 def main():
 	# Parse the command line options
@@ -71,9 +77,13 @@ def main():
 	# create a list of itineraries and populate it
 	itineraries = []
 	populate_itinerary(json_response, itineraries)
+<<<<<<< Updated upstream
 
 	for itinerary in itineraries[:10]:
 		print(itinerary)
 
 if __name__ == '__main__':
 	main()
+=======
+	print_top_flights(itineraries)
+>>>>>>> Stashed changes
