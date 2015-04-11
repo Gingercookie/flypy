@@ -41,11 +41,11 @@ def populate_itinerary(json_response, itineraries):
 		itineraries.append(Flight(tripOption))
 
 if __name__ == '__main__':
-	# Read the api key
-	api_key = get_api_key()
-
 	# Parse the command line options
 	args = command_line()
+
+	# Read the api key
+	api_key = get_api_key()
 
 	# Create the json api request
 	json_request = create_json_request(args)
@@ -69,4 +69,5 @@ if __name__ == '__main__':
 	itineraries = []
 	populate_itinerary(json_response, itineraries)
 
-	itineraries.print_top_10()
+	for itinerary in itineraries[:10]:
+		print(itinerary)
