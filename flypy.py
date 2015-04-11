@@ -77,13 +77,9 @@ def main():
 	# create a list of itineraries and populate it
 	itineraries = []
 	populate_itinerary(json_response, itineraries)
-<<<<<<< Updated upstream
 
 	for itinerary in itineraries[:10]:
 		print(itinerary)
 
 if __name__ == '__main__':
 	main()
-=======
-	print_top_flights(itineraries)
->>>>>>> Stashed changes
