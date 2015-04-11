@@ -38,7 +38,10 @@ def command_line():
 def populate_itinerary(json_response, itineraries):
 
 	for tripOption in json_response['trips']['tripOption']:
-		itineraries.append(Flight(tripOption))
+		itineraries.append(Itinerary(tripOption))
+
+def print_itineraries(output):
+	return 0
 
 if __name__ == '__main__':
 	# Parse the command line options
@@ -55,7 +58,7 @@ if __name__ == '__main__':
 
 	# create URL using only requested/desired fields for output
 	url = create_url(api_key)
-	
+
 	# Request the data from the server
 	response = requests.post(url, json=json_request, headers=headers)
 
