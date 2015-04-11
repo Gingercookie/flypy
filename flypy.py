@@ -77,9 +77,7 @@ def main():
 	# create a list of itineraries and populate it
 	itineraries = []
 	populate_itinerary(json_response, itineraries)
-
-	for itinerary in itineraries[:10]:
-		print(itinerary)
+	print_top_flights(itineraries)
 
 if __name__ == '__main__':
 	main()
