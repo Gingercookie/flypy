@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 import sqlite3
 import sys
 from config import OPENFLIGHTS_DATABASE_URL, API_URL, FIELDS, SOLUTION_NUMBER
@@ -85,15 +85,30 @@ def process_date(d_str):
 	'''Processes the inputted date into API format'''
 	try:
 		# Check inputted date format
-		month, day, year = d_str.split('/')
+		month, day, year = map(int, d_str.split('/'))
+
+		# Check for YY instead of YYYY
+		if year < 100:
+			year += 2000
 
 		# Create a date object to check if month, day, year are valid
-		dt_date = date(int(year), int(month), int(day))
+		dt_date = date(year, month, day)
+
+		# Check for logical dates
+		dt_today = date.today()
+		if (dt_today > dt_date):
+			print('Invalid date {invalid_date}, cannot schedule a flight for date in the past'.format(invalid_date=d_str), file=sys.stderr)
+			sys.exit(1)
+
+		if (dt_date - dt_today > timedelta(weeks=52)):
+			print('Invalid date {invalid_date}, cannot schedule a flight for more than a year in the future'.format(invalid_date=d_str), file=sys.stderr)
+			sys.exit(1)
+			
 	except ValueError:
 		print('Invalid date {invalid_date}, check input'.format(invalid_date=d_str), file=sys.stderr)
 		sys.exit(1)
 
 	# Process into API form
 	api_date = dt_date.strftime('%Y-%m-%d')
-
+	
 	return api_date
