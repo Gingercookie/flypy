@@ -40,7 +40,7 @@ def populate_itinerary(json_response, itineraries):
 	for tripOption in json_response['trips']['tripOption']:
 		itineraries.append(Flight(tripOption))
 
-if __name__ == '__main__':
+def main():
 	# Parse the command line options
 	args = command_line()
 
@@ -71,3 +71,6 @@ if __name__ == '__main__':
 
 	for itinerary in itineraries[:10]:
 		print(itinerary)
+
+if __name__ == '__main__':
+	main()
