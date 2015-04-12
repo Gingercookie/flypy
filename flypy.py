@@ -37,15 +37,12 @@ def command_line():
 	return vars(args)
 
 def setup_logging(debug):
+	'''Set up logging for the system'''
 	# Toggle debugging mode if debug flag is set
 	level = logging.DEBUG if debug else logging.INFO
 	logging.basicConfig(filename='flypy.log', level=level, format=LOG_FORMAT, datefmt=LOG_DATE_FORMAT)
 
-def populate_itinerary(json_response, itineraries):
-	for tripOption in json_response['trips']['tripOption']:
-		itineraries.append(Itinerary(tripOption))
-
-def print_top_flights(itineraries):
+def print_top_itineraries(itineraries):
 
 	print("Top Flights")
 	print("-----------")
@@ -97,10 +94,12 @@ def main():
 			logging.exception('Non-OK status code from Google API')
 			raise e
 
-	# create a list of itineraries and populate it
-	itineraries = []
-	populate_itinerary(json_response, itineraries)
-	print_top_flights(itineraries)
+	# create a list of itineraries
+	json_trip_options = json_response['trips']['tripOption']
+	itineraries = list(map(Itinerary, json_trip_options))
+	
+	# Print the top itineraries
+	print_top_itineraries(itineraries)
 
 if __name__ == '__main__':
 	main()
