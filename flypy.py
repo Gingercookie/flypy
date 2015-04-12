@@ -38,7 +38,16 @@ def command_line():
 def populate_itinerary(json_response, itineraries):
 
 	for tripOption in json_response['trips']['tripOption']:
-		itineraries.append(Flight(tripOption))
+		itineraries.append(Itinerary(tripOption))
+
+def print_top_flights(itineraries):
+
+	print("Top Flights")
+	print("-----------")
+
+	for num, itinerary in enumerate(itineraries[:10], start=1):
+		print("Itinerary #{:2}:".format(num),
+			itinerary)
 
 def main():
 	# Parse the command line options
@@ -55,7 +64,7 @@ def main():
 
 	# create URL using only requested/desired fields for output
 	url = create_url(api_key)
-	
+
 	# Request the data from the server
 	response = requests.post(url, json=json_request, headers=headers)
 
@@ -68,9 +77,7 @@ def main():
 	# create a list of itineraries and populate it
 	itineraries = []
 	populate_itinerary(json_response, itineraries)
-
-	for itinerary in itineraries[:10]:
-		print(itinerary)
+	print_top_flights(itineraries)
 
 if __name__ == '__main__':
 	main()
