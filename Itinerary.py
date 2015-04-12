@@ -25,7 +25,7 @@ class Itinerary:
 
 		# grabbing itinerary attributes from legs and json_response
 		self.price = float(flight['pricing'][0]['saleTotal'][3:])
-		self.duration = sum((leg.duration for leg in self.legs))
+		self.duration = self.arrival - self.departure
 
 	def __str__(self):
 		# Header information

@@ -29,6 +29,7 @@ def command_line():
 	parser.add_argument('-a', '--adults', default=0, type=int, help='Number of adults to book')
 	parser.add_argument('-c', '--children', default=0, type=int, help='Number of children to book')
 	parser.add_argument('-s', '--seniors', default=0, type=int, help='Number of senior citizens to book')
+	parser.add_argument('-p', '--prioritize', default='price', choices=['price', 'time'], help='Which category to prioritize when outputting top flights')
 	parser.add_argument('--debug', action='store_true', help='Toggles sending debugging messages to the log')
 
 	args = parser.parse_args()
@@ -98,6 +99,12 @@ def main():
 	json_trip_options = json_response['trips']['tripOption']
 	itineraries = list(map(Itinerary, json_trip_options))
 	
+	# Sort the itineraries based on the user priority
+	if (args['prioritize'] == 'price'):
+		itineraries.sort(key=lambda itinerary: itinerary.price)
+	elif (args['prioritize'] == 'time'):
+		itineraries.sort(key=lambda itinerary: itinerary.duration)
+
 	# Print the top itineraries
 	print_top_itineraries(itineraries)
 
