@@ -12,21 +12,20 @@ def create_json_request(options):
 	children = options['children']
 	seniors = options['seniors']
 	if not valid_passenger_count(adults, children, seniors):
-		print('There must be at least one passenger to book a flight', file=sys.stderr)
-		exit(1)
+		raise ValueError('There must be at least one passenger to book a flight')
 
 	# Validate To airport code and From airport code
 	origin_code = options['origin']
 	destination_code = options['destination']
 	if not valid_airport_codes(origin_code, destination_code):
-		print('Invalid airport code given for origin or destination, check input', file=sys.stderr)
-		sys.exit(1)
+		raise ValueError('Invalid airport code given for origin or destination')
 
 	# Process the inputted date into api format
 	d_str = options['day']	
 	api_date = process_date(d_str)
 
 	# Create the response from validated data
+	logging.debug('Creating json request')
 	json_request = {
 		'request': {
 			'passengers':
@@ -50,6 +49,7 @@ def create_json_request(options):
 
 def create_url(api_key):
 	'''Creates api url containing api key and specifies api output fields from config'''
+	logging.debug('Creating url from api key and fields %s from config', ', '.join(FIELDS.keys()))
 	# Create comma separated list of fields from config
 	fields = ','.join(FIELDS.values())
 
@@ -60,6 +60,7 @@ def create_url(api_key):
 
 def valid_passenger_count(*passenger_counts):
 	'''Check that there is at least one person on the flight'''
+	logging.debug('Validating passenger count')
 	if sum(passenger_counts) < 1:
 		return False
 
@@ -67,12 +68,16 @@ def valid_passenger_count(*passenger_counts):
 
 def valid_airport_codes(*codes):
 	'''Checks that all airport codes are valid airports'''
+	logging.debug('Validating origin and destination codes')
+	
 	# Connect to the airport codes database
+	logging.debug('Connecting to openflights database at %s', OPENFLIGHTS_DATABASE_URL)
 	connection = sqlite3.connect(OPENFLIGHTS_DATABASE_URL)
 	cursor = connection.cursor()
 
 	# Query the openflights table for valid FAA codes
 	for code in codes:
+		logging.debug('Validating FAA code %s', code)
 		cursor.execute('SELECT 1 FROM airports WHERE faacode = ?', (code,))
 		
 		# Check if the query return True
@@ -84,32 +89,30 @@ def valid_airport_codes(*codes):
 
 def process_date(d_str):
 	'''Processes the inputted date into API format'''
+	logging.debug('Processing inputted date to api format')
+	# Check inputted date format
 	try:
-		# Check inputted date format
 		month, day, year = map(int, d_str.split('/'))
-
-		# Check for YY instead of YYYY
-		if year < 100:
-			year += 2000
-
-		# Create a date object to check if month, day, year are valid
-		dt_date = date(year, month, day)
-
-		# Check for logical dates
-		dt_today = date.today()
-		if (dt_today > dt_date):
-			print('Invalid date {invalid_date}, cannot schedule a flight for date in the past'.format(invalid_date=d_str), file=sys.stderr)
-			sys.exit(1)
-
-		if (dt_date - dt_today > timedelta(weeks=52)):
-			print('Invalid date {invalid_date}, cannot schedule a flight for more than a year in the future'.format(invalid_date=d_str), file=sys.stderr)
-			sys.exit(1)
-			
 	except ValueError:
-		print('Invalid date {invalid_date}, check input'.format(invalid_date=d_str), file=sys.stderr)
-		sys.exit(1)
+		raise ValueError('Invalid date {invalid_date}, date format should be MM/DD/YYYY'.format(invalid_date=d_str))
+
+	# Check for YY instead of YYYY
+	if year < 100:
+		year += 2000
+
+	# Create a date object to check if month, day, year are valid
+	dt_date = date(year, month, day)
+
+	# Check for logical dates
+	dt_today = date.today()
+	if (dt_today > dt_date):
+		raise ValueError('Invalid date {invalid_date}: cannot schedule a flight for a date in the past'.format(invalid_date=d_str))
+
+	if (dt_date - dt_today > timedelta(weeks=52)):
+		raise ValueError('Invalid date {invalid_date}: cannot schedule a flight more than one year in the future'.format(invalid_date=d_str))
 
 	# Process into API form
 	api_date = dt_date.strftime('%Y-%m-%d')
-	
+	logging.debug('Processed input date %s to api date %s', d_str, api_date)
+
 	return api_date

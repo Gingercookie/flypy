@@ -10,14 +10,13 @@ from config import API_KEY_ENV_VAR, USER_AGENT, LOG_FORMAT, LOG_DATE_FORMAT
 from Itinerary import Itinerary
 
 def get_api_key():
-	'''Get the api key from user environment variable'''
-	logging.debug('Retriving api key from %s', API_KEY_ENV_VAR)
-	# Read api key from API_KEY_ENV_VAR defined in config
+	'''Get the API key from user environment variable'''
+	logging.debug('Retriving API key from environment variable %s', API_KEY_ENV_VAR)
+	# Read API key from API_KEY_ENV_VAR defined in config
 	api_key = os.environ.get(API_KEY_ENV_VAR)
 
 	if not api_key:
-		print('Please set the api key as the environment variable {env_var}'.format(env_var=API_KEY_ENV_VAR), file=sys.stderr)
-		sys.exit(1)
+		raise OSError('Please set the API key as the environment variable {env_var}'.format(env_var=API_KEY_ENV_VAR))
 
 	return api_key
 
@@ -64,27 +63,35 @@ def main():
 	setup_logging(args['debug'])
 
 	# Read the api key
-	api_key = get_api_key()
+	try:
+		api_key = get_api_key()
+	except OSError as e:
+		logging.exception('Could not retrieve API key')
 
 	# Create the json api request
-	json_request = create_json_request(args)
-
-	# Set gzip encoding headers
-	headers = {'Accept-Encoding:': 'gzip', 'User-Agent:': USER_AGENT}
+	try:
+		json_request = create_json_request(args)
+	except ValueError as e:
+		logging.exception('Preprocessing Error')
 
 	# create URL using only requested/desired fields for output
 	url = create_url(api_key)
 
+	# Set gzip encoding headers
+	headers = {'Accept-Encoding:': 'gzip', 'User-Agent:': USER_AGENT}
+
 	# Request the data from the server
-	logging.debug('Sending request to api.')
-	sys.exit(0)
+	logging.debug('Sending request to API')
 	response = requests.post(url, json=json_request, headers=headers)
 
 	# Retrieve the json response
 	if response.status_code == requests.codes.ok:
 		json_response = response.json()
 	else:
-		response.raise_for_status()
+		try:
+			response.raise_for_status()
+		except Exception as e:
+			logging.exception('Non-OK status code from Google API')
 
 	# create a list of itineraries and populate it
 	itineraries = []
