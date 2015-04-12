@@ -1,4 +1,5 @@
 from datetime import date, timedelta
+import logging
 import sqlite3
 import sys
 from config import OPENFLIGHTS_DATABASE_URL, API_URL, FIELDS, SOLUTION_NUMBER

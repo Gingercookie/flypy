@@ -1,3 +1,5 @@
+import logging
+
 class Leg:
 	'''Each leg of a flight represents one single flight from airport to airport.'''
 

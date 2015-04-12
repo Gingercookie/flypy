@@ -1,3 +1,4 @@
+import logging
 from Leg import Leg
 
 class Itinerary:

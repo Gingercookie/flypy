@@ -1,14 +1,17 @@
 import argparse
 import json
+import logging
 import os
 import requests
 import sys
+
 from preprocessing import create_url, create_json_request
-from config import API_KEY_ENV_VAR, USER_AGENT
+from config import API_KEY_ENV_VAR, USER_AGENT, LOG_FORMAT, LOG_DATE_FORMAT
 from Itinerary import Itinerary
 
 def get_api_key():
 	'''Get the api key from user environment variable'''
+	logging.debug('Retriving api key from %s', API_KEY_ENV_VAR)
 	# Read api key from API_KEY_ENV_VAR defined in config
 	api_key = os.environ.get(API_KEY_ENV_VAR)
 
@@ -28,15 +31,19 @@ def command_line():
 	parser.add_argument('-a', '--adults', default=0, type=int, help='Number of adults to book')
 	parser.add_argument('-c', '--children', default=0, type=int, help='Number of children to book')
 	parser.add_argument('-s', '--seniors', default=0, type=int, help='Number of senior citizens to book')
+	parser.add_argument('--debug', action='store_true', help='Toggles sending debugging messages to the log')
 
-	# Parse stdin
 	args = parser.parse_args()
 
 	# Return dict instead of Namespace
 	return vars(args)
 
-def populate_itinerary(json_response, itineraries):
+def setup_logging(debug):
+	# Toggle debugging mode if debug flag is set
+	level = logging.DEBUG if debug else logging.INFO
+	logging.basicConfig(filename='flypy.log', level=level, format=LOG_FORMAT, datefmt=LOG_DATE_FORMAT)
 
+def populate_itinerary(json_response, itineraries):
 	for tripOption in json_response['trips']['tripOption']:
 		itineraries.append(Itinerary(tripOption))
 
@@ -53,6 +60,9 @@ def main():
 	# Parse the command line options
 	args = command_line()
 
+	# Set up logging for the program
+	setup_logging(args['debug'])
+
 	# Read the api key
 	api_key = get_api_key()
 
@@ -66,6 +76,8 @@ def main():
 	url = create_url(api_key)
 
 	# Request the data from the server
+	logging.debug('Sending request to api.')
+	sys.exit(0)
 	response = requests.post(url, json=json_request, headers=headers)
 
 	# Retrieve the json response

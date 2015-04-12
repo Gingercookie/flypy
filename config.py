@@ -18,3 +18,5 @@ API_KEY_ENV_VAR = 'FLYPY_APIKEY'
 USER_AGENT = 'flypy_v0.1 (gzip)'
 SOLUTION_NUMBER = 25
 OPENFLIGHTS_DATABASE_URL = 'openflightsairports.db'
+LOG_FORMAT = '%(levelname)s:%(asctime)s - %(module)s:%(funcName)s:%(lineno)d - %(message)s'
+LOG_DATE_FORMAT = '%m/%d/%Y %H:%M:%S'
