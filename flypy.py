@@ -85,7 +85,6 @@ def main():
 
 	# Request the data from the server
 	logging.info('Sending request to API')
-	sys.exit(0)
 	response = requests.post(url, json=json_request, headers=headers)
 
 	# Retrieve the json response
