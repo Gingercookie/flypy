@@ -34,30 +34,6 @@ class Itinerary:
 		pArrivalTime = pArrivalDateTime.strftime('%I:%M %p %Z')
 		pArrivalDate = pArrivalDateTime.strftime('%x')
 
-		# create pretty looking lists of formatted leg attributes
-		formattedLegDepartures = []
-		formattedLegArrivals = []
-		origins = []
-		destinations = []
-		durations = []
-
-		for a, i in enumerate(self.legs):
-			# populate the formatted leg departures list
-			formattedLegDate = self.legs[a].departureTime.replace(':','')
-			pLegDepartureDateTime = datetime.strptime(formattedLegDate, '%Y-%m-%dT%H%M%z')
-			formattedLegDepartures.append(pLegDepartureDateTime)
-
-			# populate the formatted leg arrivals list
-			formattedLegDate = self.legs[a].arrivalTime.replace(':','')
-			pLegArrivalDateTime = datetime.strptime(formattedLegDate, '%Y-%m-%dT%H%M%z')
-			formattedLegArrivals.append(pLegArrivalDateTime)
-
-			# populate the list of origins and destinations
-			origins.append(self.legs[a].origin)
-			destinations.append(self.legs[a].destination)
-			durations.append(self.legs[a].duration)
-
-
 		# Header information
 		result = "${}".format(pPrice)
 		result += "\t{})".format(pDepartureTime)
@@ -69,18 +45,7 @@ class Itinerary:
 		# Leg information
 		result += "\tLegs: {}".format(len(self.legs))
 		for i, leg in enumerate(self.legs, start=1):
-
-			# pull out formatted datetime information for current iteration of legs
-			pLegDepartureTime = formattedLegDepartures[i-1].strftime('%I:%M %p %Z')
-			pLegDepartureDate = formattedLegDepartures[i-1].strftime('%x')
-			pLegArrivalTime = formattedLegArrivals[i-1].strftime('%I:%M %p %Z')
-			pLegArrivalDate = formattedLegArrivals[i-1].strftime('%x')
-
-			result += "\n\t\tLeg {}: {} -> {}".format(i, origins[i-1], destinations[i-1])
-			result += "\n\t\t\tDeparting: {}".format(pLegDepartureTime)
-			result += "\n\t\t\tArriving:  {}".format(pLegArrivalTime)
-			result += "\n\t\t\tDuration:  {} minutes".format(durations[i-1])
-
+			result += "\n\t\tLeg {}: {}".format(i, leg.__str__())
 
 		result += "\n"
 

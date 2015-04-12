@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 
 class Leg:
 	'''Each leg of a flight represents one single flight from airport to airport.'''
@@ -15,17 +16,23 @@ class Leg:
 		self.origin = leg_info['origin']
 
 	def __str__(self):
-		headers = ['Origin', 'Departure Time', 'Destination', 'Arrival Time']
-		data = [(self.origin, self.departureTime, self.destination, self.arrivalTime)]
+		result = ''
 
-		print(self.origin)
-		print(self.departureTime)
-		print(self.destination)
-		print(self.arrivalTime)
-		print(data)
-		print(headers)
+		# Removed ':' to make formatting possible
+		formattedDepartureDate = self.departureTime.replace(':','')
+		pDepartureDateTime = datetime.strptime(formattedDepartureDate, '%Y-%m-%dT%H%M%z')
+		pDepartureTime = pDepartureDateTime.strftime('%I:%M %p %Z')
+		pDepartureDate = pDepartureDateTime.strftime('%x')
 
-		return 'Origin {}'.format(self.origin)
-		# print('Departure Time: {}'.format(self.departureTime))
-		# print('Destination {}'.format(self.destination))
-		# print('Arrival Time: {}'.format(self.arrivalTime))
+		# Removed ':' to make formatting possible
+		formattedArrivalDate = self.arrivalTime.replace(':','')
+		pArrivalDateTime = datetime.strptime(formattedArrivalDate, '%Y-%m-%dT%H%M%z')
+		pArrivalTime = pArrivalDateTime.strftime('%I:%M %p %Z')
+		pArrivalDate = pArrivalDateTime.strftime('%x')
+
+		result += "{} -> {}".format(self.origin, self.destination)
+		result += "\n\t\t\tDeparting: {}".format(pDepartureTime)
+		result += "\n\t\t\tArriving:  {}".format(pArrivalTime)
+		result += "\n\t\t\tDuration:  {} minutes".format(self.duration)
+
+		return result
