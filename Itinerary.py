@@ -1,5 +1,6 @@
 import logging
 from Leg import Leg
+from datetime import datetime
 
 class Itinerary:
 	'''Itinerary class is an object that contains exactly one full flight for a trip.'''
@@ -17,39 +18,70 @@ class Itinerary:
 		self.departureDate = self.legs[0].departureTime
 		self.duration = sum((leg.duration for leg in self.legs))
 
-	# TODO - __str__ returns a string, does not print on its own
 	def __str__(self):
-		# create pretty looking (printable) attributes
+		# create pretty looking (printable) itinerary attributes
 		pPrice = self.price.split('.')[0][3:]
-		# pArrivalTime
-		# pArrivalDate
-		# pDepartueTime
-		# pDepartueDate
 
-		for i, leg in enumerate(self.legs):
+		# Removed ':' to make formatting possible
+		formattedDepartureDate = self.departureDate.replace(':','')
+		pDepartureDateTime = datetime.strptime(formattedDepartureDate, '%Y-%m-%dT%H%M%z')
+		pDepartureTime = pDepartureDateTime.strftime('%I:%M %p %Z')
+		pDepartureDate = pDepartureDateTime.strftime('%x')
 
-			# Header information
-			result = "${}".format(pPrice)
-			result += "\t{}".format(self.legs[0].departureTime)
-			result += "\t->\t{}".format(self.legs[-1].arrivalTime)
-			# result += "\n\t\t{}".format(self.legs[0].departureDate)
-			# result += "\t{}".format(self.legs[-1].arrivalDate)
+		# Removed ':' to make formatting possible
+		formattedArrivalDate = self.arrivalDate.replace(':','')
+		pArrivalDateTime = datetime.strptime(formattedArrivalDate, '%Y-%m-%dT%H%M%z')
+		pArrivalTime = pArrivalDateTime.strftime('%I:%M %p %Z')
+		pArrivalDate = pArrivalDateTime.strftime('%x')
+
+		# create pretty looking lists of formatted leg attributes
+		formattedLegDepartures = []
+		formattedLegArrivals = []
+		origins = []
+		destinations = []
+		durations = []
+
+		for a, i in enumerate(self.legs):
+			# populate the formatted leg departures list
+			formattedLegDate = self.legs[a].departureTime.replace(':','')
+			pLegDepartureDateTime = datetime.strptime(formattedLegDate, '%Y-%m-%dT%H%M%z')
+			formattedLegDepartures.append(pLegDepartureDateTime)
+
+			# populate the formatted leg arrivals list
+			formattedLegDate = self.legs[a].arrivalTime.replace(':','')
+			pLegArrivalDateTime = datetime.strptime(formattedLegDate, '%Y-%m-%dT%H%M%z')
+			formattedLegArrivals.append(pLegArrivalDateTime)
+
+			# populate the list of origins and destinations
+			origins.append(self.legs[a].origin)
+			destinations.append(self.legs[a].destination)
+			durations.append(self.legs[a].duration)
+
+
+		# Header information
+		result = "${}".format(pPrice)
+		result += "\t{})".format(pDepartureTime)
+		result += "\t->\t{}".format(pArrivalTime)
+		result += "\n\t\t\t     {}".format(pDepartureDate)
+		result += "\t\t\t     {}".format(pArrivalDate)
+		result += "\n"
+
+		# Leg information
+		result += "\tLegs: {}".format(len(self.legs))
+		for i, leg in enumerate(self.legs, start=1):
+
+			# pull out formatted datetime information for current iteration of legs
+			pLegDepartureTime = formattedLegDepartures[i-1].strftime('%I:%M %p %Z')
+			pLegDepartureDate = formattedLegDepartures[i-1].strftime('%x')
+			pLegArrivalTime = formattedLegArrivals[i-1].strftime('%I:%M %p %Z')
+			pLegArrivalDate = formattedLegArrivals[i-1].strftime('%x')
+
+			result += "\n\t\tLeg {}: {} -> {}".format(i, origins[i-1], destinations[i-1])
+			result += "\n\t\t\tDeparting: {}".format(pLegDepartureTime)
+			result += "\n\t\t\tArriving:  {}".format(pLegArrivalTime)
+			result += "\n\t\t\tDuration:  {} minutes".format(durations[i-1])
+
+
+		result += "\n"
 
 		return result
-			# print('Total price: ${}'.format(self.price))
-			# print('Total flight duration: {}'.format(self.duration))
-
-			# for i, leg in enumerate(self.legs):
-			# 	print('\n--------------------------------------------------')
-			# 	print('Leg #{}'.format(i))
-			# 	print(leg)
-
-
-	# def print_top_10(self):
-	# 	print('==================================================')
-	# 	print('Here are the top 10 results for your search.')
-	# 	print('==================================================')
-	# 	for i in range(10):
-	# 		print('\nFlight Option Number: %d, from %s to %s', i, flights[i].origin, flights[i].destination)
-
-	# 		print('\n--------------------------------------------------')
