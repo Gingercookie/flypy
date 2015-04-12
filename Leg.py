@@ -8,31 +8,29 @@ class Leg:
 
 		leg_info = leg['leg'][0]
 
-		self.arrivalTime = leg_info['arrivalTime']
-		self.departureTime = leg_info['departureTime']
+		# Removed ':' to make formatting possible
+		# create arrival and departure datetime objects
+		formattedArrivalDate = leg_info['arrivalTime'].replace(':','')
+		formattedDepartureDate = leg_info['departureTime'].replace(':','')
+		self.arrival = datetime.strptime(formattedArrivalDate, '%Y-%m-%dT%H%M%z')
+		self.departure = datetime.strptime(formattedDepartureDate, '%Y-%m-%dT%H%M%z')
+
+		# generating strings from arrival/departure datetimes
+		self.departure_time_str = self.departure.strftime('%I:%M %p %Z')
+		self.departure_date_str = self.departure.strftime('%x')
+		self.arrival_time_str = self.arrival.strftime('%I:%M %p %Z')
+		self.arrival_date_str = self.arrival.strftime('%x')
+
+		# grabbing leg information from json_response
 		self.destination = leg_info['destination']
 		self.duration = leg_info['duration']
 		self.mileage = leg_info['mileage']
 		self.origin = leg_info['origin']
 
 	def __str__(self):
-		result = ''
-
-		# Removed ':' to make formatting possible
-		formattedDepartureDate = self.departureTime.replace(':','')
-		pDepartureDateTime = datetime.strptime(formattedDepartureDate, '%Y-%m-%dT%H%M%z')
-		pDepartureTime = pDepartureDateTime.strftime('%I:%M %p %Z')
-		pDepartureDate = pDepartureDateTime.strftime('%x')
-
-		# Removed ':' to make formatting possible
-		formattedArrivalDate = self.arrivalTime.replace(':','')
-		pArrivalDateTime = datetime.strptime(formattedArrivalDate, '%Y-%m-%dT%H%M%z')
-		pArrivalTime = pArrivalDateTime.strftime('%I:%M %p %Z')
-		pArrivalDate = pArrivalDateTime.strftime('%x')
-
-		result += "{} -> {}".format(self.origin, self.destination)
-		result += "\n\t\t\tDeparting: {}".format(pDepartureTime)
-		result += "\n\t\t\tArriving:  {}".format(pArrivalTime)
-		result += "\n\t\t\tDuration:  {} minutes".format(self.duration)
-
-		return result
+		return "{origin} -> {destination}\n" \
+		"\t\t\tDeparting: {departure_time}\n" \
+		"\t\t\tArriving:  {arrival_time}\n" \
+		"\t\t\tDuration:  {duration} minutes".format(origin=self.origin, \
+		destination=self.destination, departure_time=self.departure_time_str, \
+		arrival_time=self.arrival_time_str, duration=self.duration)
