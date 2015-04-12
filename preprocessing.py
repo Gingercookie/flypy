@@ -1,7 +1,6 @@
 from datetime import date, timedelta
 import logging
 import sqlite3
-import sys
 from config import OPENFLIGHTS_DATABASE_URL, API_URL, FIELDS, SOLUTION_NUMBER
 
 def create_json_request(options):
@@ -11,14 +10,13 @@ def create_json_request(options):
 	adults = options['adults']
 	children = options['children']
 	seniors = options['seniors']
-	if not valid_passenger_count(adults, children, seniors):
-		raise ValueError('There must be at least one passenger to book a flight')
+	validate_passenger_count(adults, children, seniors)
+		
 
 	# Validate To airport code and From airport code
 	origin_code = options['origin']
 	destination_code = options['destination']
-	if not valid_airport_codes(origin_code, destination_code):
-		raise ValueError('Invalid airport code given for origin or destination')
+	validate_airport_codes(origin_code, destination_code)
 
 	# Process the inputted date into api format
 	d_str = options['day']	
@@ -58,15 +56,20 @@ def create_url(api_key):
 	
 	return url
 
-def valid_passenger_count(*passenger_counts):
-	'''Check that there is at least one person on the flight'''
+def validate_passenger_count(*passenger_counts):
+	'''Check that there is at least one person on the flight and there are positive persons'''
 	logging.debug('Validating passenger count')
+	# Check if there are negative passengers
+	is_negative = lambda i: i < 0
+	if any(map(is_negative, passenger_counts)):
+		raise ValueError('There cannot be negative passengers for any passenger type')
+
 	if sum(passenger_counts) < 1:
-		return False
+		raise ValueError('There must be at least one passenger to book a flight')
 
 	return True
 
-def valid_airport_codes(*codes):
+def validate_airport_codes(*codes):
 	'''Checks that all airport codes are valid airports'''
 	logging.debug('Validating origin and destination codes')
 	
@@ -83,7 +86,7 @@ def valid_airport_codes(*codes):
 		# Check if the query return True
 		row = cursor.fetchone()
 		if not row:
-			return False
+			raise ValueError('Could not find matching airport for airport code {}'.format(code))
 
 	return True
 
@@ -96,14 +99,14 @@ def process_date(d_str):
 	except ValueError:
 		raise ValueError('Invalid date {invalid_date}, date format should be MM/DD/YYYY'.format(invalid_date=d_str))
 
-	# Check for YY instead of YYYY
+	# Attempt to correct YY for YYYY
 	if year < 100:
 		year += 2000
 
 	# Create a date object to check if month, day, year are valid
 	dt_date = date(year, month, day)
 
-	# Check for logical dates
+	# Check for logical dates to reserve flights
 	dt_today = date.today()
 	if (dt_today > dt_date):
 		raise ValueError('Invalid date {invalid_date}: cannot schedule a flight for a date in the past'.format(invalid_date=d_str))

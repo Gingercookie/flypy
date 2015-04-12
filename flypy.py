@@ -1,5 +1,4 @@
 import argparse
-import json
 import logging
 import os
 import requests
@@ -66,13 +65,17 @@ def main():
 	try:
 		api_key = get_api_key()
 	except OSError as e:
-		logging.exception('Could not retrieve API key')
+		logging.exception('Could not retrieve API key from %s', API_KEY_ENV_VAR)
+		print(e, file=sys.stderr)
+		sys.exit(1)
 
 	# Create the json api request
 	try:
 		json_request = create_json_request(args)
 	except ValueError as e:
 		logging.exception('Preprocessing Error')
+		print(e, file=sys.stderr)
+		sys.exit(1)
 
 	# create URL using only requested/desired fields for output
 	url = create_url(api_key)
@@ -81,7 +84,8 @@ def main():
 	headers = {'Accept-Encoding:': 'gzip', 'User-Agent:': USER_AGENT}
 
 	# Request the data from the server
-	logging.debug('Sending request to API')
+	logging.info('Sending request to API')
+	sys.exit(0)
 	response = requests.post(url, json=json_request, headers=headers)
 
 	# Retrieve the json response
@@ -92,6 +96,7 @@ def main():
 			response.raise_for_status()
 		except Exception as e:
 			logging.exception('Non-OK status code from Google API')
+			raise e
 
 	# create a list of itineraries and populate it
 	itineraries = []
