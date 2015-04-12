@@ -46,7 +46,7 @@ def print_top_flights(itineraries):
 	print("-----------")
 
 	for num, itinerary in enumerate(itineraries[:10], start=1):
-		print("Itinerary #{}:".format(num),
+		print("Itinerary #{:2}:".format(num),
 			itinerary)
 
 def main():
