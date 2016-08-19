@@ -10,6 +10,6 @@ Contains information from [OpenFlights Airport Database](http://openflights.org/
 
 <hr>
 
-Currently the project supports searching and sorting of flights for a single day. We had intended to support fuzzy date searching and round-trip/mutliple-leg flights.
+Currently the project supports searching and sorting of flights for a single day.
 
 This project was stopped short of its original intended goals due to API limitations.
